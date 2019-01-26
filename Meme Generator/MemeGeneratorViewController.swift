@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class MemeGeneratorViewController: UIViewController {
     
     // Outlet to the imageView that will hold the Meme Picture
     @IBOutlet weak var imagePickerView: UIImageView!
@@ -25,31 +25,25 @@ class ViewController: UIViewController {
     
     
     // Text attributes dictionary for border color, text color, font, size, and borrder width
+    let memeTextAttributes: [NSAttributedString.Key: Any] = [
+        NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
+        NSAttributedString.Key.foregroundColor: UIColor.white,
+        NSAttributedString.Key.strokeColor: UIColor.black,
+        NSAttributedString.Key.strokeWidth: -3.0
+    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let memeTextAttributes: [NSAttributedString.Key: Any] = [
-            NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-            NSAttributedString.Key.foregroundColor: UIColor.white,
-            NSAttributedString.Key.strokeColor: UIColor.black,
-            NSAttributedString.Key.strokeWidth: -3.0
-        ]
         
         // Recognizer to dismiss keyboard when user taps away from the keyboard or textfield
         let tapAnywhere = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
         self.view.addGestureRecognizer(tapAnywhere)
         
-        topTextField.defaultTextAttributes = memeTextAttributes
-        topTextField.textAlignment = .center
-        topTextField.text = "TOP"
-        topTextField.delegate = self
-        bottomTextField.defaultTextAttributes = memeTextAttributes
-        bottomTextField.textAlignment = .center
-        bottomTextField.text = "BOTTOM"
         bottomTextField.delegate = self
-        shareButton.isEnabled = false
-        
+        topTextField.delegate = self
+        textFieldSetup(topTextField)
+        textFieldSetup(bottomTextField)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -61,6 +55,20 @@ class ViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         unsubscribeToKeyboardNotifications()
+    }
+    
+    func textFieldSetup(_ textfield: UITextField) {
+        
+        
+        textfield.defaultTextAttributes = memeTextAttributes
+        textfield.textAlignment = .center
+        if textfield == topTextField {
+            textfield.text = "TOP"
+        }
+        if textfield == bottomTextField {
+            bottomTextField.text = "BOTTOM"
+        }
+        
     }
     
     // Create the memed image
@@ -87,9 +95,17 @@ class ViewController: UIViewController {
     
     @IBAction func shareButtonTapped(_ sender: Any) {
         let shareController = UIActivityViewController(activityItems: [generateMemedImage()], applicationActivities: [])
-        present(shareController, animated: true) {
+        shareController.completionWithItemsHandler = {(activity: UIActivity.ActivityType?, completed: Bool,  [Any]?, error: Error?) in
+            if completed == false {
+                // User canceled
+                return
+            }
+            // User completed activity
             self.save()
         }
+        
+        self.present(shareController, animated: true, completion: nil)
+
         
     }
     
@@ -105,13 +121,6 @@ class ViewController: UIViewController {
     @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
         activeTextField?.resignFirstResponder()
         
-        if topTextField.text == "" {
-            topTextField.text = "TOP"
-        }
-        
-        if bottomTextField.text == "" {
-            bottomTextField.text = "BOTTOM"
-        }
     }
 
     
@@ -122,24 +131,26 @@ class ViewController: UIViewController {
 
 
 // ImagePicker protocol methods and functions
-extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension MemeGeneratorViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     // When the user taps the pick button
     @IBAction func pickFromLibraryButtonPressed(_ sender: Any) {
         
-        // Create the imagePickerViewController and present it
-        let pickerController = UIImagePickerController()
-        pickerController.delegate = self
-        pickerController.sourceType = .photoLibrary
-        present(pickerController, animated: true, completion: nil)
+        setupPickerController(sourceType: .photoLibrary)
     }
     
     @IBAction func pickFromCameraButtonPressed(_ sender: Any) {
         
+       setupPickerController(sourceType: .camera)
+        
+    }
+    
+    func setupPickerController(sourceType: UIImagePickerController.SourceType){
+        
         // Create the imagePickerViewController and present it
         let pickerController = UIImagePickerController()
         pickerController.delegate = self
-        pickerController.sourceType = .camera
+        pickerController.sourceType = sourceType
         present(pickerController, animated: true, completion: nil)
         
     }
@@ -172,27 +183,37 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
 
 // Text field protocol methods and functions
 
-extension ViewController: UITextFieldDelegate {
+extension MemeGeneratorViewController: UITextFieldDelegate {
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        
+        textField.text = ""
+        
+        return true
+    }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
         activeTextField = textField
-        textField.text = ""
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         textField.resignFirstResponder()
+
+       
         
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+
         if topTextField.text == "" {
             topTextField.text = "TOP"
         }
-        
         if bottomTextField.text == "" {
             bottomTextField.text = "BOTTOM"
         }
-        
-        return true
     }
     
     // Subscribe to listen for the keyboard showing up
@@ -223,6 +244,7 @@ extension ViewController: UITextFieldDelegate {
     
     @objc func keyboardWillHide(_ notification: Notification) {
         view.frame.origin.y = 0.0
+        
     }
     
     

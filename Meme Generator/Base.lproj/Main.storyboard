@@ -10,20 +10,19 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Meme Generator View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Meme_Generator" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MemeGeneratorViewController" customModule="Meme_Generator" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ra9-b9-gvU">
-                                <rect key="frame" x="0.0" y="108" width="414" height="714"/>
+                                <rect key="frame" x="0.0" y="108" width="414" height="685"/>
                             </imageView>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="TOP" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="mSV-gC-Wp1" userLabel="Top Text Field">
-                                <rect key="frame" x="165" y="123" width="84" height="47"/>
+                                <rect key="frame" x="0.0" y="123" width="414" height="47"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" id="46r-Ol-JlP"/>
                                 </constraints>
@@ -32,7 +31,7 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters"/>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="BOTTOM" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4Yt-JF-SSw" userLabel="Bottom Text Field">
-                                <rect key="frame" x="120.5" y="760" width="173" height="47"/>
+                                <rect key="frame" x="0.0" y="731" width="414" height="47"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" id="GCa-PB-3r5"/>
                                 </constraints>
@@ -41,7 +40,7 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters"/>
                             </textField>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="f65-8a-pNz" userLabel="Bottom Toolbar">
-                                <rect key="frame" x="0.0" y="842" width="414" height="49"/>
+                                <rect key="frame" x="0.0" y="813" width="414" height="49"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="jMh-ye-5gT"/>
                                     <barButtonItem systemItem="camera" id="cha-Hp-ZcG" userLabel="Camera">
@@ -80,13 +79,17 @@
                         <constraints>
                             <constraint firstItem="6HE-zf-5dj" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="1Cq-nJ-2eB"/>
                             <constraint firstItem="Ra9-b9-gvU" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="8bh-wK-gh8"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="4Yt-JF-SSw" secondAttribute="trailing" id="9Sx-1f-j1i"/>
                             <constraint firstItem="6HE-zf-5dj" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="9bt-fc-p7Z"/>
-                            <constraint firstAttribute="bottom" secondItem="f65-8a-pNz" secondAttribute="bottom" constant="5" id="DhW-9J-J8i"/>
+                            <constraint firstItem="mSV-gC-Wp1" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="DgU-JL-vmv"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="f65-8a-pNz" secondAttribute="bottom" id="DhW-9J-J8i"/>
                             <constraint firstItem="mSV-gC-Wp1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="GJs-eV-f14"/>
                             <constraint firstItem="Ra9-b9-gvU" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="MEH-f9-7uz"/>
+                            <constraint firstItem="4Yt-JF-SSw" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Sno-ll-Yqm"/>
                             <constraint firstItem="f65-8a-pNz" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="WMC-GX-NHS"/>
                             <constraint firstItem="4Yt-JF-SSw" firstAttribute="bottom" secondItem="Ra9-b9-gvU" secondAttribute="bottom" constant="-15" id="XQs-ep-ahA"/>
                             <constraint firstItem="mSV-gC-Wp1" firstAttribute="top" secondItem="Ra9-b9-gvU" secondAttribute="top" constant="15" id="d3H-u5-zTV"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="mSV-gC-Wp1" secondAttribute="trailing" id="e0F-mH-Dd4"/>
                             <constraint firstItem="Ra9-b9-gvU" firstAttribute="top" secondItem="6HE-zf-5dj" secondAttribute="bottom" constant="20" id="hYO-ec-lPZ"/>
                             <constraint firstItem="f65-8a-pNz" firstAttribute="top" secondItem="Ra9-b9-gvU" secondAttribute="bottom" constant="20" id="oS5-5k-bwD"/>
                             <constraint firstItem="4Yt-JF-SSw" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="wSN-75-V8h"/>
@@ -105,6 +108,7 @@
                         <outlet property="topToolBar" destination="6HE-zf-5dj" id="CQd-Fb-rLC"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
     </scenes>
