@@ -32,9 +32,14 @@ class MemeGeneratorViewController: UIViewController {
         NSAttributedString.Key.strokeWidth: -3.0
     ]
     
+    // Variables that will hold data meme data from previous controller
+    var sentTopText: String?
+    var sentBottomText: String?
+    var sentImage: UIImage?
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         // Recognizer to dismiss keyboard when user taps away from the keyboard or textfield
         let tapAnywhere = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
@@ -44,6 +49,17 @@ class MemeGeneratorViewController: UIViewController {
         topTextField.delegate = self
         textFieldSetup(topTextField)
         textFieldSetup(bottomTextField)
+        shareButton.isEnabled = false
+        
+        // Set textfields and image if they are being passed over
+        if sentTopText != nil && sentBottomText != nil && sentImage != nil{
+            
+            topTextField.text = sentTopText
+            bottomTextField.text = sentBottomText
+            imagePickerView.image = sentImage
+            
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,10 +78,10 @@ class MemeGeneratorViewController: UIViewController {
         
         textfield.defaultTextAttributes = memeTextAttributes
         textfield.textAlignment = .center
-        if textfield == topTextField {
+        if textfield == topTextField && topTextField.text == "" {
             textfield.text = "TOP"
         }
-        if textfield == bottomTextField {
+        if textfield == bottomTextField && bottomTextField.text == "" {
             bottomTextField.text = "BOTTOM"
         }
         
@@ -90,6 +106,10 @@ class MemeGeneratorViewController: UIViewController {
     func save() {
         // Create the meme
         let meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: imagePickerView.image!, memedImage: generateMemedImage())
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.memes.append(meme)
+        print(appDelegate.memes.count)
     }
     
     
@@ -105,17 +125,12 @@ class MemeGeneratorViewController: UIViewController {
         }
         
         self.present(shareController, animated: true, completion: nil)
-
-        
     }
     
-    @IBAction func cancelButtonTapped(_ sender: Any) {
+    // User tapped on the done button
+    @IBAction func doneButtonTapped(_ sender: Any) {
         
-        imagePickerView.image = nil
-        topTextField.text = "TOP"
-        bottomTextField.text = "BOTTOM"
-        shareButton.isEnabled = false
-        
+        self.dismiss(animated: true, completion: nil)
     }
     
     @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
@@ -149,6 +164,7 @@ extension MemeGeneratorViewController: UIImagePickerControllerDelegate, UINaviga
         
         // Create the imagePickerViewController and present it
         let pickerController = UIImagePickerController()
+        pickerController.allowsEditing = true
         pickerController.delegate = self
         pickerController.sourceType = sourceType
         present(pickerController, animated: true, completion: nil)
@@ -159,8 +175,12 @@ extension MemeGeneratorViewController: UIImagePickerControllerDelegate, UINaviga
     // Protocol method to grab the chosen picture using the dictionary key
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        // Set the imageView to the chosen picture
-        if let imageSelection = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+        // Set the imageView to the chosen picture whether it was edited or not
+        if let imageSelection = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            
+            imagePickerView.image = imageSelection
+        }
+        else if let imageSelection = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             imagePickerView.image = imageSelection
             
         }
@@ -187,33 +207,16 @@ extension MemeGeneratorViewController: UITextFieldDelegate {
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         
+        activeTextField = textField
         textField.text = ""
         
         return true
     }
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        
-        activeTextField = textField
-    }
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         textField.resignFirstResponder()
-
-       
-        
         return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
-
-        if topTextField.text == "" {
-            topTextField.text = "TOP"
-        }
-        if bottomTextField.text == "" {
-            bottomTextField.text = "BOTTOM"
-        }
     }
     
     // Subscribe to listen for the keyboard showing up
